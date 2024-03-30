@@ -9,9 +9,7 @@ import (
 )
 
 type UrlReceiver interface {
-	//SaveURL(urlSave, alias string) error
 	GetURL(alias string) (string, error)
-	//GetAlias(url string) (string, error)
 }
 
 type Response struct {

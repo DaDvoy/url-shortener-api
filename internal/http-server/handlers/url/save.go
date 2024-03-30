@@ -11,7 +11,6 @@ import (
 	"net/http"
 )
 
-//go:generate go run github.com/vektra/mockery/v2@v2.42.1 --name=URLSaver
 type URLSaver interface {
 	SaveURL(urlSave, alias string) error
 	GetAlias(url string) (string, error)
