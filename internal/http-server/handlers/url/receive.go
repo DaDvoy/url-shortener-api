@@ -35,7 +35,7 @@ func (u *Urls) GetURL(c *gin.Context) {
 	url, err := u.URLReceiver.GetURL(response.Alias)
 	if errors.Is(err, storage.ErrURLNotFound) {
 		u.Log.Info("non-existent URL", "alias", response.Alias)
-		c.JSON(http.StatusNotFound, gin.H{"error": "There is no URL with such a short URL"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "There is not URL with such a short URL"})
 		return
 	}
 	if err != nil {
@@ -49,5 +49,5 @@ func (u *Urls) GetURL(c *gin.Context) {
 	}
 
 	u.Log.Info("returned URL")
-	c.JSON(http.StatusOK, gin.H{"URL: ": url})
+	c.JSON(http.StatusOK, gin.H{"URL": url})
 }

@@ -2,7 +2,6 @@ package url
 
 import (
 	"errors"
-	"fmt"
 	"github.com/DaDvoy/url-shortener-api.git/internal/lib/random"
 	"github.com/DaDvoy/url-shortener-api.git/internal/storage"
 	"github.com/gin-gonic/gin"
@@ -60,8 +59,7 @@ func (u *Urls) PostURL(c *gin.Context) {
 			return
 		}
 		u.Log.Info("url added")
-		retStr := fmt.Sprintf("New short url for %s: ", req.URL)
-		c.JSON(http.StatusCreated, gin.H{retStr: alias})
+		c.JSON(http.StatusCreated, gin.H{"short-url": alias})
 		return
 	}
 	if err != nil {
@@ -71,6 +69,5 @@ func (u *Urls) PostURL(c *gin.Context) {
 	}
 
 	u.Log.Info("url already exists", slog.String("url", req.URL))
-	retStr := fmt.Sprintf("Short url for %s: ", req.URL)
-	c.JSON(http.StatusFound, gin.H{retStr: alias})
+	c.JSON(http.StatusFound, gin.H{"short-url": alias})
 }
