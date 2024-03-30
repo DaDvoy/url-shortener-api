@@ -49,5 +49,5 @@ func (u *Urls) GetURL(c *gin.Context) {
 	}
 
 	u.Log.Info("returned URL")
-	c.JSON(http.StatusOK, gin.H{"URL": url})
+	c.JSON(http.StatusOK, gin.H{"url": url})
 }

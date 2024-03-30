@@ -59,7 +59,7 @@ func (u *Urls) PostURL(c *gin.Context) {
 			return
 		}
 		u.Log.Info("url added")
-		c.JSON(http.StatusCreated, gin.H{"short-url": alias})
+		c.JSON(http.StatusCreated, gin.H{"short_url": alias})
 		return
 	}
 	if err != nil {
@@ -69,5 +69,5 @@ func (u *Urls) PostURL(c *gin.Context) {
 	}
 
 	u.Log.Info("url already exists", slog.String("url", req.URL))
-	c.JSON(http.StatusFound, gin.H{"short-url": alias})
+	c.JSON(http.StatusFound, gin.H{"short_url": alias})
 }
