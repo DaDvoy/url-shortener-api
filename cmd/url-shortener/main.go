@@ -51,9 +51,9 @@ func main() {
 	router.Use(reqID.RequestIdMiddleware)
 	router.Use(gin.Logger(), gin.Recovery())
 
-	url := &url.Urls{Log: log, ReqID: reqID, URLSaver: iStorage, URLReceiver: iStorage}
-	router.GET("/:alias", url.GetURL)
-	router.POST("/url", url.PostURL)
+	u := &url.Urls{Log: log, ReqID: reqID, URLSaver: iStorage, URLReceiver: iStorage}
+	router.GET("/:alias", u.GetURL)
+	router.POST("/url", u.PostURL)
 
 	srvListen := &http.Server{
 		Addr:         cfg.HTTPServer.Address,

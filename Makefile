@@ -1,4 +1,4 @@
-.PHONY: build-http build-grpc all clean up-in-memory up-postgres
+.PHONY: build-http build-grpc all clean up-in-memory up-postgres test
 
 all:	build-http up-in-memory
 
@@ -19,5 +19,8 @@ clean:
 		docker rm $$(docker ps -qa); \
 		docker rmi -f $$(docker images -qa); \
 		docker volume rm $$(docker volume ls -q); \
-#		2> /dev/null
+		2> /dev/null
 
+test:
+	go test ./internal/http-server/handlers/url/... -v
+	go test ./internal/http-server/handlers/url/... -v

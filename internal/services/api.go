@@ -9,7 +9,7 @@ import (
 )
 
 type Services struct {
-	log         *slog.Logger
+	Log         *slog.Logger
 	URLSaver    URLSaver
 	UrlReceiver UrlReceiver
 }
@@ -25,7 +25,7 @@ type UrlReceiver interface {
 
 func New(log *slog.Logger, saver URLSaver, receiver UrlReceiver) *Services {
 	return &Services{
-		log:         log,
+		Log:         log,
 		URLSaver:    saver,
 		UrlReceiver: receiver,
 	}
@@ -34,7 +34,7 @@ func New(log *slog.Logger, saver URLSaver, receiver UrlReceiver) *Services {
 func (s *Services) SaveURL(url string) (string, error) {
 	const op = "services.SaveURL"
 
-	log := s.log.With(
+	log := s.Log.With(
 		slog.String("op", op),
 		slog.String("url", url),
 	)
@@ -62,7 +62,7 @@ func (s *Services) SaveURL(url string) (string, error) {
 func (s *Services) GetURL(shorURL string) (string, error) {
 	const op = "services.GetURL"
 
-	log := s.log.With(
+	log := s.Log.With(
 		slog.String("op", op),
 		slog.String("short-url", shorURL),
 	)
