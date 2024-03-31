@@ -29,6 +29,7 @@ func main() {
 	switch {
 	case *inMemoryFlag:
 		iStorage = in_memory.New()
+		log.Info("storage is in-memory")
 	case *postgresFlag:
 		var err error
 		iStorage, err = postgres.New()
@@ -39,6 +40,7 @@ func main() {
 			})
 			os.Exit(1)
 		}
+		log.Info("storage is postgres")
 	default:
 		log.Error("Not enough arguments for launch")
 		os.Exit(1)

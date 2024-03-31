@@ -13,9 +13,9 @@ type Storage struct {
 }
 
 func New() (*Storage, error) {
-	const op = "storagge.Postgres.New"
+	const op = "storage.Postgres.New"
 
-	db, err := sql.Open("postgres", "user=postgres password=postgres host=localhost dbname=postgres sslmode=disable")
+	db, err := sql.Open("postgres", "user=postgres password=postgres host=host.docker.internal dbname=postgres sslmode=disable")
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -31,7 +31,7 @@ func New() (*Storage, error) {
 	return &Storage{db: db}, nil
 }
 
-func (s *Storage) SaveURL(urlSave, alias string) error { //todo: do i need to last id which inserted
+func (s *Storage) SaveURL(urlSave, alias string) error {
 	const op = "storage.Postgres.SaveURL"
 
 	query := fmt.Sprintf("INSERT INTO url(url, alias) VALUES ('%s', '%s')", urlSave, alias)
