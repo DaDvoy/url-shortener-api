@@ -20,10 +20,10 @@ func New() (*Storage, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	query := "CREATE TABLE IF NOT EXISTS url(id SERIAL PRIMARY KEY," +
-		"alias TEXT NOT NULL UNIQUE ," +
-		"url TEXT NOT NULL);" +
-		"CREATE INDEX IF NOT EXISTS index_alias ON url(alias)"
+	query := `CREATE TABLE IF NOT EXISTS url(id SERIAL PRIMARY KEY,
+		alias TEXT NOT NULL UNIQUE ,
+		url TEXT NOT NULL);
+		CREATE INDEX IF NOT EXISTS index_alias ON url(alias)`
 
 	if _, err := db.Exec(query); err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)

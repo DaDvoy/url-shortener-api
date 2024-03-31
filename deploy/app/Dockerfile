@@ -11,6 +11,6 @@ RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache g
 
 EXPOSE 8080
 
-CMD /api -postgres
+CMD /api -in-memory
 
 ENV CONFIG_PATH=./config/local.yaml

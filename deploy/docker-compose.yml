@@ -6,6 +6,7 @@ services:
     build:
       context: ./..
       dockerfile: ./deploy/app/Dockerfile
+    command: "/api ${STORAGE:--in-memory}"
     restart: always
     ports:
       - '8080:8080'
@@ -17,6 +18,8 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    profiles:
+      - 'db'
     ports:
       - '5432:5432'
     volumes:
