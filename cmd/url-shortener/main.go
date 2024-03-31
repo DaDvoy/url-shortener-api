@@ -19,7 +19,7 @@ func main() {
 	postgresFlag := flag.Bool("postgres", false, "")
 	flag.Parse()
 
-	cfg := config.MustLoad() // todo: set CONFIG_PATH for launch
+	cfg := config.MustLoad()
 	var log *slog.Logger
 
 	log = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))

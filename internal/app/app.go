@@ -12,8 +12,6 @@ type App struct {
 }
 
 func New(log *slog.Logger, storage storage.Storage, grpcPort int) *App {
-	// todo: init storage
-
 	apiService := services.New(log, storage, storage)
 
 	grpcApp := grpcapp.New(log, apiService, grpcPort)

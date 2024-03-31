@@ -47,7 +47,7 @@ func (s *Services) SaveURL(url string) (string, error) {
 			log.Error("failed to save a new short url")
 			return "", fmt.Errorf("%s: %w", op, errors.New("internal error"))
 		}
-		log.Info("url added")
+		log.Info("url added", "short-url", alias)
 		return alias, nil
 	}
 	if err != nil {

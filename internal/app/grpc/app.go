@@ -11,7 +11,7 @@ import (
 type App struct {
 	log        *slog.Logger
 	gRPCServer *grpc.Server
-	port       int // todo: add port of grpc to config.yaml and parse
+	port       int
 }
 
 func New(log *slog.Logger, apiI api.API, port int) *App {

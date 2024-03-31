@@ -6,6 +6,10 @@ services:
     build:
       context: ./..
       dockerfile: ./deploy/app/Dockerfile
+      args:
+        PROTOCOL: "${PROTOCOL:-cmd/url-shortener/main.go}"
+    links:
+      - db
     command: "/api ${STORAGE:--in-memory}"
     restart: always
     ports:

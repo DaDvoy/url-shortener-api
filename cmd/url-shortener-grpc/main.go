@@ -46,7 +46,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	application := app.New(log, iStorage, 4444) // todo: set port
+	application := app.New(log, iStorage, 8080)
 
 	go application.GRPCSrv.MustRun()
 
