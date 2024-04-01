@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "dadvoy.api.v1;apiv1";
+
+service UrlShortener {
+  rpc PostURL(PostURLRequest) returns(PostURLResponse);
+  rpc GetURL(GetURLRequest) returns(GetURLResponse);
+}
+
+message PostURLRequest {
+  string URL = 1;
+}
+
+message PostURLResponse {
+  string shortURL = 1;
+}
+
+message GetURLRequest {
+  string shortURL = 1;
+}
+
+message GetURLResponse {
+  string URL = 1;
+}

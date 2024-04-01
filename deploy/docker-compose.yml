@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  app:
+    container_name: url-shortener
+    build:
+      context: ./..
+      dockerfile: ./deploy/app/Dockerfile
+      args:
+        PROTOCOL: "${PROTOCOL:-cmd/url-shortener/main.go}"
+    links:
+      - db
+    command: "/api ${STORAGE:--in-memory}"
+    restart: always
+    ports:
+      - '8080:8080'
+  db:
+    container_name: postgres
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    profiles:
+      - 'db'
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
+
