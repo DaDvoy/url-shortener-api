@@ -1,6 +1,9 @@
 package storage
 
-import "errors"
+import (
+	"context"
+	"errors"
+)
 
 var (
 	ErrURLNotFound = errors.New("url not found")
@@ -8,7 +11,7 @@ var (
 )
 
 type Storage interface {
-	SaveURL(urlSave, alias string) error
-	GetURL(alias string) (string, error)
-	GetAlias(url string) (string, error)
+	SaveURL(ctx context.Context, urlSave, alias string) error
+	GetURL(ctx context.Context, alias string) (string, error)
+	GetAlias(ctx context.Context, url string) (string, error)
 }

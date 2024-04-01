@@ -1,6 +1,7 @@
 package url
 
 import (
+	"context"
 	"errors"
 	"github.com/DaDvoy/url-shortener-api.git/internal/lib/random"
 	"github.com/DaDvoy/url-shortener-api.git/internal/storage"
@@ -11,8 +12,8 @@ import (
 )
 
 type URLSaver interface {
-	SaveURL(urlSave, alias string) error
-	GetAlias(url string) (string, error)
+	SaveURL(ctx context.Context, urlSave, alias string) error
+	GetAlias(ctx context.Context, url string) (string, error)
 }
 
 type Request struct {
@@ -48,11 +49,11 @@ func (u *Urls) PostURL(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "URL is missing"})
 		return
 	}
-
-	alias, err := u.URLSaver.GetAlias(req.URL)
+	ctx := context.Background()
+	alias, err := u.URLSaver.GetAlias(ctx, req.URL)
 	if errors.Is(err, storage.ErrURLNotFound) {
 		alias = random.New()
-		err = u.URLSaver.SaveURL(req.URL, alias)
+		err = u.URLSaver.SaveURL(ctx, req.URL, alias)
 		if err != nil {
 			u.Log.Error("failed to save a new alias")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "internal error"})

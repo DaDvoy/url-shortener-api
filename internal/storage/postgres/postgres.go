@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -31,11 +32,11 @@ func New() (*Storage, error) {
 	return &Storage{db: db}, nil
 }
 
-func (s *Storage) SaveURL(urlSave, alias string) error {
+func (s *Storage) SaveURL(ctx context.Context, urlSave, alias string) error {
 	const op = "storage.Postgres.SaveURL"
 
 	query := fmt.Sprintf("INSERT INTO url(url, alias) VALUES ('%s', '%s')", urlSave, alias)
-	_, err := s.db.Exec(query)
+	_, err := s.db.ExecContext(ctx, query)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
@@ -43,11 +44,11 @@ func (s *Storage) SaveURL(urlSave, alias string) error {
 	return nil
 }
 
-func (s *Storage) GetURL(alias string) (string, error) {
+func (s *Storage) GetURL(ctx context.Context, alias string) (string, error) {
 	const op = "Storage.Postgres.GetURL"
 
 	query := fmt.Sprintf("SELECT url.url FROM url WHERE alias='%s'", alias)
-	rows, err := s.db.Query(query)
+	rows, err := s.db.QueryContext(ctx, query)
 	defer rows.Close()
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
@@ -68,11 +69,11 @@ func (s *Storage) GetURL(alias string) (string, error) {
 	return res, nil
 }
 
-func (s *Storage) GetAlias(url string) (string, error) {
+func (s *Storage) GetAlias(ctx context.Context, url string) (string, error) {
 	const op = "Storage.Postgres.GetAlias"
 
 	query := fmt.Sprintf("SELECT alias FROM url WHERE url='%s'", url)
-	rows, err := s.db.Query(query)
+	rows, err := s.db.QueryContext(ctx, query)
 	defer rows.Close()
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)

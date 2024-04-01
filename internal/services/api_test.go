@@ -1,6 +1,7 @@
 package services_test
 
 import (
+	"context"
 	"fmt"
 	"github.com/DaDvoy/url-shortener-api.git/internal/lib/logger/skipslog"
 	"github.com/DaDvoy/url-shortener-api.git/internal/lib/random"
@@ -49,21 +50,23 @@ func getMap() map[string]string {
 
 func fillStorage(storage *in_memory.Storage) {
 	mp := getMap()
+	ctx := context.TODO()
 	for v := range mp {
-		_ = storage.SaveURL(v, mp[v])
+		_ = storage.SaveURL(ctx, v, mp[v])
 	}
 }
 
 func TestSaveURL(t *testing.T) {
 	strg := in_memory.New()
 	fillStorage(strg)
+	ctx := context.TODO()
 	s := &services.Services{Log: skipslog.NewSkipLogger(), URLSaver: strg, UrlReceiver: strg}
 	t.Run("already exist", func(t *testing.T) {
-		_, err := s.SaveURL("http://google.com")
+		_, err := s.SaveURL(ctx, "http://google.com")
 		require.Equal(t, err, storage.ErrURLExists)
 	})
 	t.Run("added new url", func(t *testing.T) {
-		_, err := s.SaveURL("http://go.dev")
+		_, err := s.SaveURL(ctx, "http://go.dev")
 		require.Equal(t, err, nil)
 	})
 	t.Run("huge requests", func(t *testing.T) {
@@ -73,7 +76,7 @@ func TestSaveURL(t *testing.T) {
 		for i := 0; i < 1000; i++ {
 			randStr := random.New()
 
-			_, err := s.SaveURL(randStr)
+			_, err := s.SaveURL(ctx, randStr)
 			require.NoError(t, err)
 			require.Equal(t, err, nil)
 		}
@@ -83,17 +86,18 @@ func TestSaveURL(t *testing.T) {
 func TestGetURL(t *testing.T) {
 	strg := in_memory.New()
 	fillStorage(strg)
+	ctx := context.TODO()
 	s := &services.Services{Log: skipslog.NewSkipLogger(), URLSaver: strg, UrlReceiver: strg}
 	t.Run("find url by short url", func(t *testing.T) {
 		mp := getMap()
 		for v := range mp {
 			shortUrl := fmt.Sprintf("%s", mp[v])
-			_, err := s.GetURL(shortUrl)
+			_, err := s.GetURL(ctx, shortUrl)
 			require.NoError(t, err)
 		}
 	})
 	t.Run("find url by short url", func(t *testing.T) {
-		_, err := s.GetURL("")
+		_, err := s.GetURL(ctx, "")
 		require.Equal(t, err, storage.ErrURLNotFound)
 	})
 	t.Run("huge map", func(t *testing.T) {
@@ -102,7 +106,7 @@ func TestGetURL(t *testing.T) {
 		s = &services.Services{Log: skipslog.NewSkipLogger(), URLSaver: strg, UrlReceiver: strg}
 		for i := 0; i < len(mp2); i++ {
 			alias := fmt.Sprintf("%s", mp1[i])
-			_, err := s.GetURL(alias)
+			_, err := s.GetURL(ctx, alias)
 			require.NoError(t, err)
 		}
 	})

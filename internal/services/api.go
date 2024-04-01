@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/DaDvoy/url-shortener-api.git/internal/lib/random"
@@ -15,12 +16,12 @@ type Services struct {
 }
 
 type URLSaver interface {
-	SaveURL(urlSave, alias string) error
-	GetAlias(url string) (string, error)
+	SaveURL(ctx context.Context, urlSave, alias string) error
+	GetAlias(ctx context.Context, url string) (string, error)
 }
 
 type UrlReceiver interface {
-	GetURL(alias string) (string, error)
+	GetURL(ctx context.Context, alias string) (string, error)
 }
 
 func New(log *slog.Logger, saver URLSaver, receiver UrlReceiver) *Services {
@@ -31,7 +32,7 @@ func New(log *slog.Logger, saver URLSaver, receiver UrlReceiver) *Services {
 	}
 }
 
-func (s *Services) SaveURL(url string) (string, error) {
+func (s *Services) SaveURL(ctx context.Context, url string) (string, error) {
 	const op = "services.SaveURL"
 
 	log := s.Log.With(
@@ -39,10 +40,10 @@ func (s *Services) SaveURL(url string) (string, error) {
 		slog.String("url", url),
 	)
 
-	alias, err := s.URLSaver.GetAlias(url)
+	alias, err := s.URLSaver.GetAlias(ctx, url)
 	if errors.Is(err, storage.ErrURLNotFound) {
 		alias = random.New()
-		err = s.URLSaver.SaveURL(url, alias)
+		err = s.URLSaver.SaveURL(ctx, url, alias)
 		if err != nil {
 			log.Error("failed to save a new short url")
 			return "", fmt.Errorf("%s: %w", op, errors.New("internal error"))
@@ -59,7 +60,7 @@ func (s *Services) SaveURL(url string) (string, error) {
 	return alias, storage.ErrURLExists
 }
 
-func (s *Services) GetURL(shorURL string) (string, error) {
+func (s *Services) GetURL(ctx context.Context, shorURL string) (string, error) {
 	const op = "services.GetURL"
 
 	log := s.Log.With(
@@ -67,7 +68,7 @@ func (s *Services) GetURL(shorURL string) (string, error) {
 		slog.String("short-url", shorURL),
 	)
 
-	url, err := s.UrlReceiver.GetURL(shorURL)
+	url, err := s.UrlReceiver.GetURL(ctx, shorURL)
 	if errors.Is(err, storage.ErrURLNotFound) {
 		log.Info("non-existent URL", "alias", shorURL)
 		return "", storage.ErrURLNotFound

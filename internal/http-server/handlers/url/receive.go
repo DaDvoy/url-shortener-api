@@ -1,6 +1,7 @@
 package url
 
 import (
+	"context"
 	"errors"
 	"github.com/DaDvoy/url-shortener-api.git/internal/storage"
 	"github.com/gin-gonic/gin"
@@ -9,7 +10,7 @@ import (
 )
 
 type UrlReceiver interface {
-	GetURL(alias string) (string, error)
+	GetURL(ctx context.Context, alias string) (string, error)
 }
 
 type Response struct {
@@ -32,7 +33,8 @@ func (u *Urls) GetURL(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "need a non-empty URL"})
 		return
 	}
-	url, err := u.URLReceiver.GetURL(response.Alias)
+	ctx := context.Background()
+	url, err := u.URLReceiver.GetURL(ctx, response.Alias)
 	if errors.Is(err, storage.ErrURLNotFound) {
 		u.Log.Info("non-existent URL", "alias", response.Alias)
 		c.JSON(http.StatusNotFound, gin.H{"error": "There is not URL with such a short URL"})

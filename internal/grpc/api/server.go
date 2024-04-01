@@ -11,8 +11,8 @@ import (
 )
 
 type API interface {
-	SaveURL(url string) (string, error)
-	GetURL(shorURL string) (string, error)
+	SaveURL(ctx context.Context, url string) (string, error)
+	GetURL(ctx context.Context, shorURL string) (string, error)
 }
 
 type serverAPI struct {
@@ -31,7 +31,7 @@ func (s *serverAPI) GetURL(
 	if req.GetShortURL() == "" {
 		return nil, status.Error(codes.InvalidArgument, "empty short url")
 	}
-	url, err := s.apiI.GetURL(req.GetShortURL())
+	url, err := s.apiI.GetURL(ctx, req.GetShortURL())
 	if err != nil {
 		if errors.Is(err, storage.ErrURLNotFound) {
 			return nil, status.Error(codes.NotFound, "url not found")
@@ -48,7 +48,7 @@ func (s *serverAPI) PostURL(
 	if req.GetURL() == "" {
 		return nil, status.Error(codes.InvalidArgument, "empty url")
 	}
-	shortUrl, err := s.apiI.SaveURL(req.GetURL())
+	shortUrl, err := s.apiI.SaveURL(ctx, req.GetURL())
 	if err != nil {
 		if errors.Is(err, storage.ErrURLExists) {
 			return &apiv1.PostURLResponse{ShortURL: shortUrl}, nil
